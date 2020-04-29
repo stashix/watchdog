@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1062
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingWatchdog.App", "TradingWatchdog.App\TradingWatchdog.App.csproj", "{58C9D19D-0D6B-4A3C-A832-8E4BF8A5B783}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingWatchdog.Logic", "TradingWatchdog.Logic\TradingWatchdog.Logic.csproj", "{57B26AC1-86A8-44F3-94C1-4CA9BAB11CBC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{D08A074B-624C-4376-B288-012681E9225E}"
+	ProjectSection(SolutionItems) = preProject
+		Libraries\MetaQuotes.MT5CommonAPI64.dll = Libraries\MetaQuotes.MT5CommonAPI64.dll
+		Libraries\MetaQuotes.MT5ManagerAPI64.dll = Libraries\MetaQuotes.MT5ManagerAPI64.dll
+		Libraries\MT5APIManager64.dll = Libraries\MT5APIManager64.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingWatchdog.MT5Wrapper", "TradingWatchdog.MT5Wrapper\TradingWatchdog.MT5Wrapper.csproj", "{559F6677-A9F6-41AF-9FEE-A21AE4A64D57}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58C9D19D-0D6B-4A3C-A832-8E4BF8A5B783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58C9D19D-0D6B-4A3C-A832-8E4BF8A5B783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58C9D19D-0D6B-4A3C-A832-8E4BF8A5B783}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{58C9D19D-0D6B-4A3C-A832-8E4BF8A5B783}.Debug|x64.Build.0 = Debug|Any CPU
+		{58C9D19D-0D6B-4A3C-A832-8E4BF8A5B783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58C9D19D-0D6B-4A3C-A832-8E4BF8A5B783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58C9D19D-0D6B-4A3C-A832-8E4BF8A5B783}.Release|x64.ActiveCfg = Release|Any CPU
+		{58C9D19D-0D6B-4A3C-A832-8E4BF8A5B783}.Release|x64.Build.0 = Release|Any CPU
+		{57B26AC1-86A8-44F3-94C1-4CA9BAB11CBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57B26AC1-86A8-44F3-94C1-4CA9BAB11CBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57B26AC1-86A8-44F3-94C1-4CA9BAB11CBC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{57B26AC1-86A8-44F3-94C1-4CA9BAB11CBC}.Debug|x64.Build.0 = Debug|Any CPU
+		{57B26AC1-86A8-44F3-94C1-4CA9BAB11CBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57B26AC1-86A8-44F3-94C1-4CA9BAB11CBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57B26AC1-86A8-44F3-94C1-4CA9BAB11CBC}.Release|x64.ActiveCfg = Release|Any CPU
+		{57B26AC1-86A8-44F3-94C1-4CA9BAB11CBC}.Release|x64.Build.0 = Release|Any CPU
+		{559F6677-A9F6-41AF-9FEE-A21AE4A64D57}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{559F6677-A9F6-41AF-9FEE-A21AE4A64D57}.Debug|x64.ActiveCfg = Debug|x64
+		{559F6677-A9F6-41AF-9FEE-A21AE4A64D57}.Debug|x64.Build.0 = Debug|x64
+		{559F6677-A9F6-41AF-9FEE-A21AE4A64D57}.Release|Any CPU.ActiveCfg = Release|x64
+		{559F6677-A9F6-41AF-9FEE-A21AE4A64D57}.Release|x64.ActiveCfg = Release|x64
+		{559F6677-A9F6-41AF-9FEE-A21AE4A64D57}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0C492A7B-CE1E-4331-A937-179246EC2A0D}
+	EndGlobalSection
+EndGlobal
