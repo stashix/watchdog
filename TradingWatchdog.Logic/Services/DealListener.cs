@@ -31,15 +31,13 @@ namespace TradingWatchdog.Logic.Services
         {
             try
             {
-                ulong login = cimtDeal.Login();                
-                //decimal balance = _mtp5Api.GetUserBalance(login);
-                _logger.Information($"{System.Threading.Thread.CurrentThread.ManagedThreadId} " + cimtDeal.FormatDeal(0));
-
                 Deal deal = new Deal(cimtDeal, _mtp5Api.Name);
                 _deals.Add(deal);
+   
+                decimal balance = _mtp5Api.GetUserBalance(cimtDeal.Login());
+                _logger.Information($"{System.Threading.Thread.CurrentThread.ManagedThreadId} " + cimtDeal.FormatDeal(balance, _mtp5Api.Name));
 
                 await RunCheck(deal, _deals);
-                
             }
             catch (Exception ex)
             {
@@ -49,10 +47,10 @@ namespace TradingWatchdog.Logic.Services
 
         public async Task RunCheck(Deal deal, IEnumerable<Deal> previousDeals)
         {
-            var dealWarning = await _dealChecker.CheckDeal(_mtp5Api, deal, _deals.ToList());
+            var dealWarning = await _dealChecker.CheckDeal(_mtp5Api, deal, _deals.Where(x => x.Action == deal.Action && x.Timestamp <= deal.Timestamp));
 
             if (dealWarning != null)
-                _logger.Warning($"{dealWarning}");
+                _logger.Warning($"{System.Threading.Thread.CurrentThread.ManagedThreadId} {dealWarning}");
         }
     }
 }

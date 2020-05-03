@@ -45,6 +45,9 @@ namespace TradingWatchdog.Logic.Services
 
                 foreach (Deal previousDeal in previousDeals)
                 {
+                    if (deal.Action != previousDeal.Action)
+                        continue;
+
                     if (deal.DealId == previousDeal.DealId && deal.ServerName == previousDeal.ServerName)
                         continue;
 
@@ -77,8 +80,6 @@ namespace TradingWatchdog.Logic.Services
                         Deal = deal,
                         SuspiciousDeals = suspiciousDeals
                     };
-
-                    Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId} {warning}");
 
                     return warning;
                 }

@@ -100,17 +100,17 @@ namespace TradingWatchdog.Logic.Services
             DateTimeOffset currentTimestamp = DateTimeOffset.UtcNow;
             uint treshold = _configuration.TimescaleMs * _configuration.ClearTresholdMultiplier;
 
-            _logger.Information($"{Thread.CurrentThread.ManagedThreadId} Pre-removal collection count {_deals.Count}");
+            _logger.Debug($"Pre-removal collection count {_deals.Count}");
 
             foreach (Deal deal in _deals)
             {
                 DateTimeOffset dealTimestamp = TimeZoneInfo.ConvertTimeToUtc(DateTimeOffset.FromUnixTimeMilliseconds(deal.Timestamp).DateTime);
 
                 if ((currentTimestamp - dealTimestamp).TotalMilliseconds > treshold && _deals.TryTake(out Deal dealToRemove))
-                    _logger.Information($"{Thread.CurrentThread.ManagedThreadId} Removed deal {dealToRemove} from collection.");
+                    _logger.Debug($"Removed deal {dealToRemove} from collection.");
             }
 
-            _logger.Information($"{Thread.CurrentThread.ManagedThreadId} Post-removal collection count {_deals.Count}");          
+            _logger.Debug($"Post-removal collection count {_deals.Count}");          
         }
     }
 }

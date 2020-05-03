@@ -57,7 +57,7 @@ namespace TradingWatchdog.Logic.Models
 
         public override string ToString()
         {
-            return $"#{DealId}, User '{UserId}', {Enum.GetName(typeof(DealAction), Action)} {Symbol} {Volume / (double)10000} " +
+            return $"#{DealId}, Server '{ServerName}', User '{UserId}', {Enum.GetName(typeof(DealAction), Action)} {Symbol} {Volume / (double)10000} " +
                 $"lots at {DateTimeOffset.FromUnixTimeMilliseconds(Timestamp).ToString("dd.MM.yyyy HH:mm:ss.fff")}";
         }
     }

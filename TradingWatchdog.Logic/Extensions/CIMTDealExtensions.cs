@@ -10,12 +10,12 @@ namespace TradingWatchdog.Logic.Extensions
 {
     public static class CIMTDealExtensions
     {
-        public static string FormatDeal(this CIMTDeal deal, decimal balance)
+        public static string FormatDeal(this CIMTDeal deal, decimal balance, string serverName)
         {
             if (deal == null)
                 throw new ArgumentNullException(nameof(deal));
 
-            return $"Deal #{deal.Deal()}, User '{deal.Login()}', Balance '{balance}', {FormatDealAction(deal)} {deal.Symbol()} {deal.Volume() / (double)10000} " +
+            return $"Deal #{deal.Deal()}, Server '{serverName}', User '{deal.Login()}', Balance '{balance}', {FormatDealAction(deal)} {deal.Symbol()} {deal.Volume() / (double)10000} " +
                 $"lots at {DateTimeOffset.FromUnixTimeMilliseconds(deal.TimeMsc()).ToString("dd.MM.yyyy HH:mm:ss.fff")}";
         }
 

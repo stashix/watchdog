@@ -32,13 +32,6 @@ namespace TradingWatchdog.Logic.Models
                     Login = 1005,
                     Password = "qg3ceury",
                     Name = "TestConnection"
-                },
-                new ConnectionParams()
-                {
-                    IP = "103.40.209.22:443",
-                    Login = 1005,
-                    Password = "qg3ceury",
-                    Name = "TestConnection"
                 }
             };
         }

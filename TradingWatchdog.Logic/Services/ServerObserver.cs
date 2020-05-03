@@ -35,27 +35,27 @@ namespace TradingWatchdog.Logic.Services
 
         public void Connect(ConnectionParams connectionParams)
         {
-            if(_mT5ApiDeals != null)
-            {
-                //if (_dealListener != null)
-                //    _mT5ApiDeals.DealEvents.DealAddEventHandler -= DealAdded;
-
-                _mT5ApiDeals.Disconnect();
-                _mT5ApiDeals.Dispose();
-            }
-
             if (_mT5ApiRequests != null)
             {
                 _mT5ApiRequests.Disconnect();
                 _mT5ApiRequests.Dispose();
             }
 
+            if (_mT5ApiDeals != null)
+            {
+                if (_dealListener != null)
+                    _mT5ApiDeals.DealEvents.DealAddEventHandler -= _dealListener.DealAdded;
+
+                _mT5ApiDeals.Disconnect();
+                _mT5ApiDeals.Dispose();
+            }
+
             _mT5ApiRequests = new MT5Api();
             _mT5ApiRequests.Connect(connectionParams);
 
             _mT5ApiDeals = new MT5Api();
-            //_dealListener = new DealListener(_logger, _mT5ApiDeals, _dealChecker, _deals);
-            _mT5ApiDeals.DealEvents.DealAddEventHandler += DealAdded;
+            _dealListener = new DealListener(_logger, _mT5ApiRequests, _dealChecker, _deals);
+            _mT5ApiDeals.DealEvents.DealAddEventHandler += _dealListener.DealAdded;
             _mT5ApiDeals.Connect(connectionParams);
         }
 
@@ -63,8 +63,8 @@ namespace TradingWatchdog.Logic.Services
         {
             if (_mT5ApiDeals != null)
             {
-                //if (_dealListener != null)
-                //    _mT5Api.DealEvents.DealAddEventHandler -= DealAdded;
+                if (_dealListener != null)
+                    _mT5ApiDeals.DealEvents.DealAddEventHandler -= _dealListener.DealAdded;
 
                 _mT5ApiDeals.Disconnect();
             }
@@ -90,10 +90,8 @@ namespace TradingWatchdog.Logic.Services
             {
                 if (_mT5ApiDeals != null)
                 {
-                    _logger.Information($"Disposing {Thread.CurrentThread.ManagedThreadId}");
-
-                    //if (_dealListener != null)
-                    //    _mT5Api.DealEvents.DealAddEventHandler -= DealAdded;
+                    if (_dealListener != null)
+                        _mT5ApiDeals.DealEvents.DealAddEventHandler -= _dealListener.DealAdded;
 
                     _mT5ApiDeals.Disconnect();
                     _mT5ApiDeals.Dispose();
@@ -101,37 +99,12 @@ namespace TradingWatchdog.Logic.Services
 
                 if (_mT5ApiRequests != null)
                 {
-                    _logger.Information($"Disposing {Thread.CurrentThread.ManagedThreadId}");
-
                     _mT5ApiRequests.Disconnect();
                     _mT5ApiRequests.Dispose();
                 }
             }
 
             disposed = true;
-        }
-
-        public void DealAdded(object control, CIMTDeal cimtDeal)
-        {
-            try
-            {
-                Deal deal = new Deal(cimtDeal, _mT5ApiDeals.Name);
-                _deals.Add(deal);
-
-                ulong login = cimtDeal.Login();
-                decimal balance = _mT5ApiRequests.GetUserBalance(login);
-                _logger.Information($"{Thread.CurrentThread.ManagedThreadId} {cimtDeal.FormatDeal(balance)}");
-
-                var dealWarning = _dealChecker.CheckDeal(_mT5ApiRequests, deal, _deals.ToList()).Result;
-
-                if (dealWarning != null)
-                    _logger.Warning($"{Thread.CurrentThread.ManagedThreadId} {dealWarning}");
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
     }
 }
