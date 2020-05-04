@@ -54,8 +54,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\AppConfiguration.cs" />
+    <Compile Include="Configuration\WatchedServersConfigSection.cs" />
+    <Compile Include="Configuration\ServerConnectionElement.cs" />
+    <Compile Include="Configuration\ServerConnectionCollection.cs" />
     <Compile Include="Extensions\CIMTDealExtensions.cs" />
-    <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\Deal.cs" />
     <Compile Include="Models\DealAction.cs" />
     <Compile Include="Models\DealWarning.cs" />

@@ -7,13 +7,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TradingWatchdog.Logic.Models
+namespace TradingWatchdog.Logic.Configuration
 {
-    public class Configuration
+    public class AppConfiguration
     {
-        private static readonly Lazy<Configuration> _instance = new Lazy<Configuration>(() => new Configuration(), LazyThreadSafetyMode.PublicationOnly);
+        private static readonly Lazy<AppConfiguration> _instance = new Lazy<AppConfiguration>(() => new AppConfiguration(), LazyThreadSafetyMode.PublicationOnly);
 
-        private Configuration()
+        private AppConfiguration()
         {
             TimescaleMs = uint.TryParse(ConfigurationManager.AppSettings["TimescaleMs"], out uint parsedTimescaleMs)
                 ? parsedTimescaleMs : 1000;
@@ -22,18 +22,24 @@ namespace TradingWatchdog.Logic.Models
                 ? parsedVolumeToBalanceRatio : 5;
 
             ClearTresholdMultiplier = uint.TryParse(ConfigurationManager.AppSettings["ClearTresholdMultiplier"], out uint parsedClearTresholdMultiplier)
-                ? parsedClearTresholdMultiplier : 5;
+                ? parsedClearTresholdMultiplier : 3;
 
-            ServerConnections = new List<ConnectionParams>()
+            var serverConnections = (WatchedServersConfigSection)ConfigurationManager.GetSection("watchedServers");
+            List<ConnectionParams> connectionParams = new List<ConnectionParams>();
+            foreach(ServerConnectionElement serverConnection in serverConnections.ServerConnections)
             {
-                new ConnectionParams()
+                ConnectionParams connectionParam = new ConnectionParams()
                 {
-                    IP = "103.40.209.22:443",
-                    Login = 1005,
-                    Password = "qg3ceury",
-                    Name = "TestConnection"
-                }
-            };
+                    Name = serverConnection.Name,
+                    IP = serverConnection.IP,
+                    Login = serverConnection.Login,
+                    Password = serverConnection.Password
+                };
+
+                connectionParams.Add(connectionParam);
+            }
+
+            ServerConnections = connectionParams;
         }
 
         public uint TimescaleMs { get; private set; }
@@ -44,7 +50,7 @@ namespace TradingWatchdog.Logic.Models
 
         public List<ConnectionParams> ServerConnections { get; private set; }
 
-        public static Configuration Instance
+        public static AppConfiguration Instance
         {
             get
             {

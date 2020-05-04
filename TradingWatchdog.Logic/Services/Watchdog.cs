@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Timers;
+using TradingWatchdog.Logic.Configuration;
 using TradingWatchdog.Logic.Models;
 using Timer = System.Timers.Timer;
 
@@ -15,7 +16,7 @@ namespace TradingWatchdog.Logic.Services
     {
         private readonly ILogger _logger;
         private readonly IDealChecker _dealChecker;
-        private readonly Configuration _configuration;
+        private readonly AppConfiguration _configuration;
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly Timer _clearTimer;
 
@@ -23,7 +24,7 @@ namespace TradingWatchdog.Logic.Services
         private List<IServerObserver> _dealSources;
         private ConcurrentBag<Deal> _deals;
 
-        public Watchdog(ILogger logger, IDealChecker dealChecker, Configuration configuration)
+        public Watchdog(ILogger logger, IDealChecker dealChecker, AppConfiguration configuration)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dealChecker = dealChecker ?? throw new ArgumentNullException(nameof(dealChecker));

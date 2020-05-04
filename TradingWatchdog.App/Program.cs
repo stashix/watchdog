@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using TradingWatchdog.Logic.Configuration;
 using TradingWatchdog.Logic.Models;
 using TradingWatchdog.Logic.Services;
 
@@ -22,10 +23,10 @@ namespace TradingWatchdog.App
 
             //var change = Math.Abs((dealRatio - previousDealRatio) / previousDealRatio * 100);
 
-            Configuration configuration = Configuration.Instance;
+            AppConfiguration configuration = AppConfiguration.Instance;
             IDealChecker dealChecker = new DealChecker(configuration.TimescaleMs, configuration.VolumeToBalanceRatio);
 
-            using (Logger logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("log-.txt", rollingInterval: RollingInterval.Day).CreateLogger())
+            using (Logger logger = new LoggerConfiguration().ReadFrom.AppSettings().CreateLogger())
             using (IWatchdog watchdog = new Watchdog(logger, dealChecker, configuration))
             {
                 watchdog.Start();
