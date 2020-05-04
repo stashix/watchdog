@@ -13,18 +13,21 @@ namespace TradingWatchdog.Logic.Models
     {
         public DealWarning()
         {
-            SuspiciousDeals = new List<Deal>();
+            Reasons = new List<string>();
         }
 
         [DataMember]
         public Deal Deal { get; set; }
 
         [DataMember]
-        public List<Deal> SuspiciousDeals { get; set; }
+        public Deal SuspectDeal { get; set; }
+
+        [DataMember]
+        public List<string> Reasons { get; set; }
 
         public override string ToString()
         {
-            return $"Deal '{Deal}' is suspect in relation to deals '[{string.Join(", ", SuspiciousDeals)}]'.";
+            return $"Deal '{Deal}' is suspect in relation to Deal '{SuspectDeal}'. Reasons: [{string.Join(", ", Reasons)}]";
         }
     }
 }

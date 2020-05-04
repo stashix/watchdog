@@ -9,7 +9,7 @@ namespace TradingWatchdog.Logic.Services
 {
     public interface IWatchdog : IDisposable
     {
-        void Start();
+        void Start(IEnumerable<ConnectionParams> connectionParams);
 
         void Stop();
     }

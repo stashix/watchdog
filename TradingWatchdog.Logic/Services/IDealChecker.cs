@@ -12,6 +12,6 @@ namespace TradingWatchdog.Logic.Services
 {
     public interface IDealChecker
     {
-        Task<DealWarning> CheckDeal(IMT5Api mt5Api, Deal deal, IEnumerable<Deal> previousDeals);
+        List<DealWarning> CheckDeal(IMT5Api mt5Api, Deal deal, IEnumerable<Deal> previousDeals);
     }
 }

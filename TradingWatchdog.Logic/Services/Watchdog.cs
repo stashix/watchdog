@@ -16,19 +16,25 @@ namespace TradingWatchdog.Logic.Services
     {
         private readonly ILogger _logger;
         private readonly IDealChecker _dealChecker;
-        private readonly AppConfiguration _configuration;
+        private readonly uint _clearTreshold;
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly Timer _clearTimer;
 
+        private bool isRunning = false;
         private bool disposed = false;
         private List<IServerObserver> _dealSources;
         private ConcurrentBag<Deal> _deals;
 
-        public Watchdog(ILogger logger, IDealChecker dealChecker, AppConfiguration configuration)
+        public Watchdog(ILogger logger, IDealChecker dealChecker, uint clearTreshold)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dealChecker = dealChecker ?? throw new ArgumentNullException(nameof(dealChecker));
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+
+            if (clearTreshold == 0)
+                throw new ArgumentException($"{nameof(clearTreshold)} must be greater than zero.");
+
+            _clearTreshold = clearTreshold;
+
             _cancellationTokenSource = new CancellationTokenSource();
             _clearTimer = new Timer();
 
@@ -36,25 +42,35 @@ namespace TradingWatchdog.Logic.Services
             _deals = new ConcurrentBag<Deal>();
         }
 
-        public void Start()
+        public void Start(IEnumerable<ConnectionParams> connectionParams)
         {
             try
             {
-                foreach (ConnectionParams connectionParam in _configuration.ServerConnections)
+                if (isRunning)
+                    return;
+
+                foreach (ConnectionParams connectionParam in connectionParams)
                 {
+                    _logger.Debug($"Starting observer for Server '{connectionParam.Name}', IP: '{connectionParam.IP}'.");
+
                     IServerObserver serverObserver = new ServerObserver(_logger, _dealChecker, _deals);
                     _dealSources.Add(serverObserver);
                     serverObserver.Connect(connectionParam);
+
+                    _logger.Debug($"Started observer for Server '{connectionParam.Name}', IP: '{connectionParam.IP}'.");
                 }
 
                 _clearTimer.Elapsed += new ElapsedEventHandler(OnClearExpiredDeals);
-                _clearTimer.Interval = _configuration.TimescaleMs * _configuration.ClearTresholdMultiplier;
+                _clearTimer.Interval = _clearTreshold;
                 _clearTimer.AutoReset = true;
 
                 _clearTimer.Start();
+
+                isRunning = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.Error(ex, $"Starting Watchdog failed. Reason '{ex.Message}'.");
                 Stop();
                 throw;
             }
@@ -63,6 +79,7 @@ namespace TradingWatchdog.Logic.Services
         public void Stop()
         {
             _clearTimer.Stop();
+            _clearTimer.Elapsed -= new ElapsedEventHandler(OnClearExpiredDeals);
 
             foreach (IServerObserver serverObserver in _dealSources)
             {
@@ -71,6 +88,8 @@ namespace TradingWatchdog.Logic.Services
             }
 
             _dealSources.Clear();
+
+            isRunning = false;
         }
 
         public void Dispose()
@@ -86,11 +105,7 @@ namespace TradingWatchdog.Logic.Services
 
             if (disposing)
             {
-                foreach (IServerObserver serverObserver in _dealSources)
-                {
-                    serverObserver.Disconnect();
-                    serverObserver.Dispose();
-                }
+                Stop();
             }
 
             disposed = true;
@@ -99,7 +114,6 @@ namespace TradingWatchdog.Logic.Services
         private void OnClearExpiredDeals(object source, ElapsedEventArgs e)
         {
             DateTimeOffset currentTimestamp = DateTimeOffset.UtcNow;
-            uint treshold = _configuration.TimescaleMs * _configuration.ClearTresholdMultiplier;
 
             _logger.Debug($"Pre-removal collection count {_deals.Count}");
 
@@ -107,7 +121,7 @@ namespace TradingWatchdog.Logic.Services
             {
                 DateTimeOffset dealTimestamp = TimeZoneInfo.ConvertTimeToUtc(DateTimeOffset.FromUnixTimeMilliseconds(deal.Timestamp).DateTime);
 
-                if ((currentTimestamp - dealTimestamp).TotalMilliseconds > treshold && _deals.TryTake(out Deal dealToRemove))
+                if ((currentTimestamp - dealTimestamp).TotalMilliseconds > _clearTreshold && _deals.TryTake(out Deal dealToRemove))
                     _logger.Debug($"Removed deal {dealToRemove} from collection.");
             }
 

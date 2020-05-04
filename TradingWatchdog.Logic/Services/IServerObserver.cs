@@ -1,4 +1,5 @@
-﻿using MT5Wrapper;
+﻿using MetaQuotes.MT5CommonAPI;
+using MT5Wrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace TradingWatchdog.Logic.Services
         void Connect(ConnectionParams connectionParams);
 
         void Disconnect();
+
+        void DealAdded(object control, CIMTDeal cimtDeal);
     }
 }

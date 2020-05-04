@@ -27,9 +27,9 @@ namespace TradingWatchdog.App
             IDealChecker dealChecker = new DealChecker(configuration.TimescaleMs, configuration.VolumeToBalanceRatio);
 
             using (Logger logger = new LoggerConfiguration().ReadFrom.AppSettings().CreateLogger())
-            using (IWatchdog watchdog = new Watchdog(logger, dealChecker, configuration))
+            using (IWatchdog watchdog = new Watchdog(logger, dealChecker, configuration.TimescaleMs * configuration.ClearTresholdMultiplier))
             {
-                watchdog.Start();
+                watchdog.Start(configuration.ServerConnections);
 
                 Console.ReadLine();
 
