@@ -50,8 +50,7 @@ namespace TradingWatchdog.Logic.Services
                 if (!timescaleSuspect)
                     continue;
 
-                bool currencySuspect = deal.Symbol == previousDeal.Symbol;
-                if (!currencySuspect)
+                if (deal.Symbol != previousDeal.Symbol)
                     continue;
 
                 decimal dealBalance = mt5Api.GetUserBalance(deal.UserId);

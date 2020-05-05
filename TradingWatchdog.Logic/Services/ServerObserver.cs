@@ -18,7 +18,6 @@ namespace TradingWatchdog.Logic.Services
 
         private readonly MT5Api _mT5ApiDeals;
         private readonly MT5Api _mT5ApiRequests;
-        //private IDealListener _dealListener;
 
         private bool isRunning = false;
         private bool disposed = false;
